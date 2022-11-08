@@ -7,10 +7,8 @@ import java.text.ParseException
 class LexicalAnalyzer(private val inputStream: InputStream) {
     private var curChar: Int = 0
     var curPos: Int = 0
-        get() = field
         private set
     var curTerminal: Terminal = END
-        get() = field
         private set
 
 
