@@ -6,11 +6,9 @@ import java.text.ParseException
 
 class LexicalAnalyzer(private val inputStream: InputStream) {
     private var curChar: Int = 0
-    var curPos: Int = 0
-        private set
+    private var curPos: Int = 0
     var curTerminal: Terminal = END
         private set
-
 
     init {
         nextChar()
@@ -35,18 +33,22 @@ class LexicalAnalyzer(private val inputStream: InputStream) {
                 nextChar()
                 COLON
             }
+
             '<'.code -> {
                 nextChar()
                 LANGLE
             }
+
             '>'.code -> {
                 nextChar()
                 RANGLE
             }
+
             ';'.code -> {
                 nextChar()
                 SEMICOLON
             }
+
             else -> {
                 if (!curChar.toChar().isJavaIdentifierStart()) {
                     error("Invalid character `$curChar`")
@@ -74,7 +76,7 @@ class LexicalAnalyzer(private val inputStream: InputStream) {
 
     fun expect(terminal: Terminal) {
         if (curTerminal != terminal) {
-            error("Invalid token. Expected `$terminal`, actual `$curTerminal`")
+            error("Invalid token as position $curPos. Expected `$terminal`, actual `$curTerminal`")
         }
     }
 }

@@ -13,7 +13,7 @@ internal class ParserTest {
     fun `should parse in case of no semicolon`() {
         val actual = Parser("var ar:Array<Int>").parse()
 
-        val expected = Tree(S).apply {
+        val expected = Node(S) {
             nodes(VAR, IDENTIFIER, COLON, ARRAY_IDENTIFIER, LANGLE, IDENTIFIER, RANGLE)
             node(T) {
                 node(EMPTY)
@@ -27,7 +27,7 @@ internal class ParserTest {
     fun `should parse in case of semicolon`() {
         val actual = Parser("var ar:Array<Int>;").parse()
 
-        val expected = Tree(S).apply {
+        val expected = Node(S) {
             nodes(VAR, IDENTIFIER, COLON, ARRAY_IDENTIFIER, LANGLE, IDENTIFIER, RANGLE)
             node(T) {
                 node(SEMICOLON)
@@ -41,7 +41,7 @@ internal class ParserTest {
     fun `should parse in case of random whitespaces`() {
         val actual = Parser("  var     ar    :    Array <   Int   >  ;  ").parse()
 
-        val expected = Tree(S).apply {
+        val expected = Node(S) {
             nodes(VAR, IDENTIFIER, COLON, ARRAY_IDENTIFIER, LANGLE, IDENTIFIER, RANGLE)
             node(T) {
                 node(SEMICOLON)
@@ -55,7 +55,7 @@ internal class ParserTest {
     fun `should parse in case of strange identifiers`() {
         val actual = Parser("  var     _\$f0    :    Array <   _94\$5as   >  ;  ").parse()
 
-        val expected = Tree(S).apply {
+        val expected = Node(S) {
             nodes(VAR, IDENTIFIER, COLON, ARRAY_IDENTIFIER, LANGLE, IDENTIFIER, RANGLE)
             node(T) {
                 node(SEMICOLON)

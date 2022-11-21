@@ -1,10 +1,13 @@
 package parser
 
-data class Tree(val node: Token, val children: MutableList<Tree>) {
-    constructor(node: Token, vararg children: Tree) : this(node, children.toMutableList())
+data class Node(val node: Token, val children: MutableList<Node>) {
+    constructor(node: Token, vararg children: Node) : this(node, children.toMutableList())
+    constructor(node: Token, block: Node.() -> Unit) : this(node, mutableListOf()) {
+        this.block()
+    }
 
-    fun node(nodeLabel: Token, block: Tree.() -> Unit) {
-        Tree(nodeLabel).also {
+    fun node(nodeLabel: Token, block: Node.() -> Unit) {
+        Node(nodeLabel).also {
             addChild(it)
             it.block()
         }
@@ -20,12 +23,12 @@ data class Tree(val node: Token, val children: MutableList<Tree>) {
         }
     }
 
-    fun addChild(child: Tree) {
+    fun addChild(child: Node) {
         children.add(child)
     }
 
     fun addChild(child: Token) {
-        children.add(Tree(child))
+        children.add(Node(child))
     }
 
     private fun toString(nodeId: Long): String =

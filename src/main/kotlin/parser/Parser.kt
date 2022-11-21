@@ -15,12 +15,12 @@ class Parser(private val lex: LexicalAnalyzer) {
         lex.nextToken()
     }
 
-    fun parse(): Tree {
+    fun parse(): Node {
         return s()
     }
 
-    private fun s(): Tree {
-        val res = Tree(S)
+    private fun s(): Node {
+        val res = Node(S)
         when (lex.curTerminal) {
             VAR -> {
                 lex.nextToken()
@@ -57,8 +57,8 @@ class Parser(private val lex: LexicalAnalyzer) {
         return res
     }
 
-    private fun t(): Tree {
-        val res = Tree(T)
+    private fun t(): Node {
+        val res = Node(T)
         when (lex.curTerminal) {
             SEMICOLON -> {
                 lex.nextToken()
