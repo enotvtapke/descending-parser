@@ -5,6 +5,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import parser.NonTerminal.*
 import parser.Terminal.*
+import parser.ParserTestUtils.nonGenericArrayIdentifier
 import java.text.ParseException
 
 internal class ParserTest {
@@ -14,7 +15,9 @@ internal class ParserTest {
         val actual = Parser("var ar:Array<Int>").parse()
 
         val expected = Node(S) {
-            nodes(VAR, IDENTIFIER, COLON, ARRAY_IDENTIFIER, LANGLE, IDENTIFIER, RANGLE)
+            nodes(VAR, IDENTIFIER, COLON, ARRAY_IDENTIFIER, LANGLE)
+            nonGenericArrayIdentifier()
+            node(RANGLE)
             node(T) {
                 node(EMPTY)
             }
@@ -28,7 +31,9 @@ internal class ParserTest {
         val actual = Parser("var ar:Array<Int>;").parse()
 
         val expected = Node(S) {
-            nodes(VAR, IDENTIFIER, COLON, ARRAY_IDENTIFIER, LANGLE, IDENTIFIER, RANGLE)
+            nodes(VAR, IDENTIFIER, COLON, ARRAY_IDENTIFIER, LANGLE)
+            nonGenericArrayIdentifier()
+            node(RANGLE)
             node(T) {
                 node(SEMICOLON)
             }
@@ -42,7 +47,9 @@ internal class ParserTest {
         val actual = Parser("  var     ar    :    Array <   Int   >  ;  ").parse()
 
         val expected = Node(S) {
-            nodes(VAR, IDENTIFIER, COLON, ARRAY_IDENTIFIER, LANGLE, IDENTIFIER, RANGLE)
+            nodes(VAR, IDENTIFIER, COLON, ARRAY_IDENTIFIER, LANGLE)
+            nonGenericArrayIdentifier()
+            node(RANGLE)
             node(T) {
                 node(SEMICOLON)
             }
@@ -56,7 +63,9 @@ internal class ParserTest {
         val actual = Parser("  var     _\$f0    :    Array <   _94\$5as   >  ;  ").parse()
 
         val expected = Node(S) {
-            nodes(VAR, IDENTIFIER, COLON, ARRAY_IDENTIFIER, LANGLE, IDENTIFIER, RANGLE)
+            nodes(VAR, IDENTIFIER, COLON, ARRAY_IDENTIFIER, LANGLE)
+            nonGenericArrayIdentifier()
+            node(RANGLE)
             node(T) {
                 node(SEMICOLON)
             }

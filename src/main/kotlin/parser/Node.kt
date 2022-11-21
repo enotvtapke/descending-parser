@@ -1,8 +1,8 @@
 package parser
 
-data class Node(val node: Token, val children: MutableList<Node>) {
-    constructor(node: Token, vararg children: Node) : this(node, children.toMutableList())
-    constructor(node: Token, block: Node.() -> Unit) : this(node, mutableListOf()) {
+data class Node(val label: Token, val children: MutableList<Node>, private val id: Long) {
+    constructor(node: Token) : this(node, mutableListOf(), nextId())
+    constructor(node: Token, block: Node.() -> Unit) : this(node) {
         this.block()
     }
 
@@ -31,24 +31,36 @@ data class Node(val node: Token, val children: MutableList<Node>) {
         children.add(Node(child))
     }
 
-    private fun toString(nodeId: Long): String =
+    private fun toStringInternal(): String =
         buildString {
-            append("$nodeId [label=\"$node\"]")
+            append("$id [label=\"$label\"]")
             appendLine()
-            val childrenIds = (nodeId + 1..nodeId + children.size).toList()
-            append("$nodeId -- {${childrenIds.joinToString(separator = " ")}}")
+            val childrenIds = children.map(Node::id).joinToString(separator = " ")
+            append("$id -- {$childrenIds}")
             appendLine()
-            children.forEachIndexed { index, child ->
-                append(child.toString(childrenIds[index]))
-            }
+            children.forEach { append(it.toStringInternal()) }
         }
 
     override fun toString(): String = buildString {
         append("graph ParseTree {")
         appendLine()
-        append(toString(0).trimEnd().prependIndent("  "))
+        append(toStringInternal().trimEnd().prependIndent("  "))
         appendLine()
         append("}")
         appendLine()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is Node) return false
+        return this.label == other.label && this.children == other.children
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
+
+    companion object {
+        private var globalId: Long = 0
+        private fun nextId() = globalId++
     }
 }

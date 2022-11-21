@@ -49,9 +49,14 @@ class LexicalAnalyzer(private val inputStream: InputStream) {
                 SEMICOLON
             }
 
+            ','.code -> {
+                nextChar()
+                COMMA
+            }
+
             else -> {
                 if (!curChar.toChar().isJavaIdentifierStart()) {
-                    error("Invalid character `$curChar`")
+                    error("Invalid character `${String(CharArray(curChar))}`")
                 }
                 val str = StringBuilder(curChar.toChar().toString())
                 nextChar()
@@ -71,12 +76,12 @@ class LexicalAnalyzer(private val inputStream: InputStream) {
     }
 
     fun error(message: String) {
-        throw ParseException(message, curPos)
+        throw ParseException("Error at pos ${curPos}: $message", curPos)
     }
 
     fun expect(terminal: Terminal) {
         if (curTerminal != terminal) {
-            error("Invalid token as position $curPos. Expected `$terminal`, actual `$curTerminal`")
+            error("Invalid token. Expected `$terminal`, actual `$curTerminal`")
         }
     }
 }

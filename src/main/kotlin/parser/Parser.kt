@@ -1,7 +1,6 @@
 package parser
 
-import parser.NonTerminal.S
-import parser.NonTerminal.T
+import parser.NonTerminal.*
 import parser.Terminal.*
 import java.io.InputStream
 
@@ -42,9 +41,7 @@ class Parser(private val lex: LexicalAnalyzer) {
                 lex.nextToken()
                 res.addChild(LANGLE)
 
-                lex.expect(IDENTIFIER)
-                lex.nextToken()
-                res.addChild(IDENTIFIER)
+                res.addChild(e())
 
                 lex.expect(RANGLE)
                 lex.nextToken()
@@ -65,6 +62,70 @@ class Parser(private val lex: LexicalAnalyzer) {
                 res.addChild(SEMICOLON)
             }
             END -> {
+                res.addChild(EMPTY)
+            }
+            else -> lex.error("Unexpected token ${lex.curTerminal}")
+        }
+        return res
+    }
+
+    private fun e(): Node {
+        val res = Node(E)
+        when (lex.curTerminal) {
+            IDENTIFIER -> {
+                lex.nextToken()
+                res.addChild(IDENTIFIER)
+
+                res.addChild(e_())
+            }
+            else -> lex.error("Unexpected token ${lex.curTerminal}")
+        }
+        return res
+    }
+
+    private fun e_(): Node {
+        val res = Node(E_)
+        when (lex.curTerminal) {
+            LANGLE -> {
+                lex.nextToken()
+                res.addChild(LANGLE)
+
+                res.addChild(f())
+
+                lex.expect(RANGLE)
+                lex.nextToken()
+                res.addChild(RANGLE)
+            }
+            COMMA, RANGLE -> {
+                res.addChild(EMPTY)
+            }
+            else -> lex.error("Unexpected token ${lex.curTerminal}")
+        }
+        return res
+    }
+
+    private fun f(): Node {
+        val res = Node(F)
+        when (lex.curTerminal) {
+            IDENTIFIER -> {
+                res.addChild(e())
+                res.addChild(f_())
+            }
+            else -> lex.error("Unexpected token ${lex.curTerminal}")
+        }
+        return res
+    }
+
+    private fun f_(): Node {
+        val res = Node(F_)
+        when (lex.curTerminal) {
+            COMMA -> {
+                lex.nextToken()
+                res.addChild(COMMA)
+
+                res.addChild(f())
+            }
+            RANGLE -> {
                 res.addChild(EMPTY)
             }
             else -> lex.error("Unexpected token ${lex.curTerminal}")
