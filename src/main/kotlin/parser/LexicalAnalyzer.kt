@@ -66,7 +66,6 @@ class LexicalAnalyzer(private val inputStream: InputStream) {
                 }
                 when (str.toString()) {
                     "var" -> VAR
-                    "Array" -> ARRAY_IDENTIFIER
                     else -> {
                         IDENTIFIER
                     }

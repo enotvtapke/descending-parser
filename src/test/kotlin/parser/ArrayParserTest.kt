@@ -5,18 +5,18 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import parser.NonTerminal.*
 import parser.Terminal.*
-import parser.ParserTestUtils.nonGenericArrayIdentifier
+import parser.ParserTestUtils.nonGenericIdentifier
 import java.text.ParseException
 
-internal class ParserTest {
+internal class ArrayParserTest {
 
     @Test
     fun `should parse in case of no semicolon`() {
         val actual = Parser("var ar:Array<Int>").parse()
 
         val expected = Node(S) {
-            nodes(VAR, IDENTIFIER, COLON, ARRAY_IDENTIFIER, LANGLE)
-            nonGenericArrayIdentifier()
+            nodes(VAR, IDENTIFIER, COLON, IDENTIFIER, LANGLE)
+            nonGenericIdentifier()
             node(RANGLE)
             node(T) {
                 node(EMPTY)
@@ -31,8 +31,8 @@ internal class ParserTest {
         val actual = Parser("var ar:Array<Int>;").parse()
 
         val expected = Node(S) {
-            nodes(VAR, IDENTIFIER, COLON, ARRAY_IDENTIFIER, LANGLE)
-            nonGenericArrayIdentifier()
+            nodes(VAR, IDENTIFIER, COLON, IDENTIFIER, LANGLE)
+            nonGenericIdentifier()
             node(RANGLE)
             node(T) {
                 node(SEMICOLON)
@@ -47,8 +47,8 @@ internal class ParserTest {
         val actual = Parser("  var     ar    :    Array <   Int   >  ;  ").parse()
 
         val expected = Node(S) {
-            nodes(VAR, IDENTIFIER, COLON, ARRAY_IDENTIFIER, LANGLE)
-            nonGenericArrayIdentifier()
+            nodes(VAR, IDENTIFIER, COLON, IDENTIFIER, LANGLE)
+            nonGenericIdentifier()
             node(RANGLE)
             node(T) {
                 node(SEMICOLON)
@@ -63,8 +63,8 @@ internal class ParserTest {
         val actual = Parser("  var     _\$f0    :    Array <   _94\$5as   >  ;  ").parse()
 
         val expected = Node(S) {
-            nodes(VAR, IDENTIFIER, COLON, ARRAY_IDENTIFIER, LANGLE)
-            nonGenericArrayIdentifier()
+            nodes(VAR, IDENTIFIER, COLON, IDENTIFIER, LANGLE)
+            nonGenericIdentifier()
             node(RANGLE)
             node(T) {
                 node(SEMICOLON)
@@ -99,13 +99,6 @@ internal class ParserTest {
     fun `should throw parse exception in case of no COLON`() {
         assertThatThrownBy {
             Parser("var a Array<Int>").parse()
-        }.isInstanceOf(ParseException::class.java)
-    }
-
-    @Test
-    fun `should throw parse exception in case of invalid ARRAY_IDENTIFIER`() {
-        assertThatThrownBy {
-            Parser("var a: Arr<Int>").parse()
         }.isInstanceOf(ParseException::class.java)
     }
 

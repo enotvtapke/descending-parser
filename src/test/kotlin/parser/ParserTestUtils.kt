@@ -1,19 +1,19 @@
 package parser
 
-object ParserTestUtils {
-    fun Node.nonGenericArrayIdentifier() =
-        node(NonTerminal.E) {
-            node(Terminal.IDENTIFIER)
-            node(NonTerminal.E_) {
-                node(Terminal.EMPTY)
-            }
-        }
+import parser.NonTerminal.*
+import parser.Terminal.*
 
+object ParserTestUtils {
     fun Node.nonGenericIdentifier() =
-        node(NonTerminal.F) {
-            nonGenericArrayIdentifier()
-            node(NonTerminal.F_) {
-                node(Terminal.EMPTY)
+        node(F) {
+            node(E) {
+                node(IDENTIFIER)
+                node(E_) {
+                    node(EMPTY)
+                }
+            }
+            node (F_) {
+                node(EMPTY)
             }
         }
 }

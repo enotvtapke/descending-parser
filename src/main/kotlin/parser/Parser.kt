@@ -33,15 +33,15 @@ class Parser(private val lex: LexicalAnalyzer) {
                 lex.nextToken()
                 res.addChild(COLON)
 
-                lex.expect(ARRAY_IDENTIFIER)
+                lex.expect(IDENTIFIER)
                 lex.nextToken()
-                res.addChild(ARRAY_IDENTIFIER)
+                res.addChild(IDENTIFIER)
 
                 lex.expect(LANGLE)
                 lex.nextToken()
                 res.addChild(LANGLE)
 
-                res.addChild(e())
+                res.addChild(f())
 
                 lex.expect(RANGLE)
                 lex.nextToken()
